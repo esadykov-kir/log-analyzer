@@ -41,7 +41,7 @@ public class FileScanner {
         } else
             this.filter = Collections.emptySet();
 
-        log.debug("new scanner for folder: {} recursive is: {}", folder, true);
+        log.debug("new scanner for folder: {} recursive is: {}", folder, recursive);
     }
 
     public Set<ScannedFile> scan() {
