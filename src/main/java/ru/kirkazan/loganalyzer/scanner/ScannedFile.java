@@ -41,7 +41,7 @@ public class ScannedFile {
         return "ScannedFile{" +
                 "file=" + file +
                 ", date=" + date +
-                '}';
+                "}\n";
     }
 
     @Override
