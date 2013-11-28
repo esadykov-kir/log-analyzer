@@ -13,7 +13,7 @@ public abstract class FileSystemTest {
     /**
      * "ReadOnly" - only convention
      *
-     * @param relativePath relative path will be cocatenated with base test folder
+     * @param relativePath relative path will be concatenated with base test folder
      * @return file in base test folder
      */
     public File getReadOnlyTestFile(String relativePath) {

@@ -8,9 +8,10 @@ import java.util.Date;
  * @since 28.11.13 18:31
  */
 public class ScannedFile {
-    private File file;
-    private Date date;
+    private final File file;
+    private final Date date;
 
+    @SuppressWarnings("unused")
     public ScannedFile(String file) {
         this(new File(file));
     }
@@ -48,6 +49,7 @@ public class ScannedFile {
                 "}\n";
     }
 
+    @SuppressWarnings("RedundantIfStatement")
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

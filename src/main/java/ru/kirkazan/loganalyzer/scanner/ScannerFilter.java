@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  * @since 28.11.13 20:19
  */
 public class ScannerFilter {
-    Logger log = LoggerFactory.getLogger(ScannerFilter.class);
+    final Logger log = LoggerFactory.getLogger(ScannerFilter.class);
     private final Pattern filePattern;
     private final SimpleDateFormat dateFormat;
 
