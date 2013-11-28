@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.HashSet;
@@ -21,8 +20,6 @@ public class FileScanner {
     private final File folder;
     private final boolean recursive;
     private final Set<ScannerFilter> filter;
-
-    private FileFilter fileFilter;
 
     public FileScanner(String folder) {
         this(folder, false, null);
@@ -41,19 +38,6 @@ public class FileScanner {
         this.recursive = recursive;
         if (filter != null) {
             this.filter = new HashSet<ScannerFilter>(filter);
-            this.fileFilter = new FileFilter() {
-                @Override
-                public boolean accept(File pathname) {
-                    if (!pathname.isFile())
-                        return FileScanner.this.recursive;
-
-                    for (ScannerFilter filterItem : FileScanner.this.filter) {
-                        if (filterItem.filter(pathname))
-                            return true;
-                    }
-                    return false;
-                }
-            };
         } else
             this.filter = Collections.emptySet();
 
@@ -65,14 +49,25 @@ public class FileScanner {
     }
 
     private Set<ScannedFile> scan(File folder) {
-        File[] files = folder.listFiles(fileFilter);
+        File[] files = folder.listFiles();
         if (files == null)
             return Collections.emptySet();
         Set<ScannedFile> scannedFiles = new LinkedHashSet<ScannedFile>(files.length);
         for (File f : files) {
-            if (f.isFile())
-                scannedFiles.add(new ScannedFile(f));
-            else if (recursive && f.isDirectory())
+            if (f.isFile()) {
+                if (FileScanner.this.filter.isEmpty())
+                    scannedFiles.add(new ScannedFile(f));
+                else {
+                    ScannedFile filteredFile;
+                    for (ScannerFilter filterItem : FileScanner.this.filter) {
+                        filteredFile = filterItem.filter(f);
+                        if (filteredFile != null) {
+                            scannedFiles.add(filteredFile);
+                            break;
+                        }
+                    }
+                }
+            } else if (recursive && f.isDirectory())
                 scannedFiles.addAll(scan(f));
         }
         return scannedFiles;

@@ -19,6 +19,10 @@ public class ScannedFile {
         this(new File(parent, file));
     }
 
+    public ScannedFile(File parent, String file, Date date) {
+        this(new File(parent, file), date);
+    }
+
     public ScannedFile(File file) {
         this(file, (Date) null);
     }

@@ -7,10 +7,7 @@ import ru.kirkazan.loganalyzer.test.FileSystemTest;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -107,6 +104,23 @@ public class ScannerTest extends FileSystemTest {
         expected.add(new ScannedFile(inputFolder, "a/aa/2.2008-11-08.log"));
         expected.add(new ScannedFile(inputFolder, "a/aa/2.2008-11-09.log"));
         expected.add(new ScannedFile(inputFolder, "a/2.log"));
+        expected.add(new ScannedFile(inputFolder, "2.txt"));
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testComplexFileScanner() {
+        File inputFolder = getReadOnlyTestFile("filescanner");
+
+        Set<ScannerFilter> filter = new HashSet<ScannerFilter>();
+        filter.add(new ScannerFilter("2.(\\d\\d\\d\\d-\\d\\d-\\d\\d).log", "yyyy-MM-dd"));
+        filter.add(new ScannerFilter(".*txt"));
+        FileScanner scanner = new FileScanner(inputFolder.getAbsolutePath(), true, filter);
+
+        Set<ScannedFile> actual = scanner.scan();
+        Set<ScannedFile> expected = new LinkedHashSet<ScannedFile>();
+        expected.add(new ScannedFile(inputFolder, "a/aa/2.2008-11-08.log", new Date(2008 - 1900, 11 - 1, 8)));
+        expected.add(new ScannedFile(inputFolder, "a/aa/2.2008-11-09.log", new Date(2008 - 1900, 11 - 1, 9)));
         expected.add(new ScannedFile(inputFolder, "2.txt"));
         assertEquals(expected, actual);
     }
